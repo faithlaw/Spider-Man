@@ -134,7 +134,7 @@ wrap.addEventListener('click', (e) => {
 **`addEventListener('click', ...)`** means "run this code whenever this element is clicked."
 A click adds a burst of speed (`4`) in a random direction, chosen by flipping a virtual coin with `Math.random()`.
 
-## Ideas to extend it
+## Ideas to build on later
 - Add a web-shoot sound effect on click
 - Cycle through multiple uploaded images
 - Build an Electron version so it floats over your *entire* desktop instead of just the browser tab
