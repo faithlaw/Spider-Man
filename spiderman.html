@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spidey Drop</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #87CEEB, #ffffff);
+    font-family: sans-serif;
+  }
+
+  #upload-bar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    background: rgba(255,255,255,0.85);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  #rig {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    transform-origin: top center;
+    display: none;
+  }
+
+  #web-thread {
+    position: relative;
+    left: -1px;
+    width: 2px;
+    height: 0;
+    background: #eeeeee;
+  }
+
+  #spidey-wrap {
+    position: relative;
+    left: -60px;
+    width: 120px;
+    cursor: pointer;
+  }
+
+  #spidey-img {
+    width: 120px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  }
+
+  #hint {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<div id="upload-bar">
+  <label>Pick your Spidey (or anyone): <input type="file" id="file-input" accept="image/*"></label>
+</div>
+
+<div id="rig">
+  <div id="web-thread"></div>
+  <div id="spidey-wrap">
+    <img id="spidey-img" src="" alt="Spidey">
+  </div>
+</div>
+
+<div id="hint" style="display:none;">click him to give a push 🕸️</div>
+
+<script>
+  const rig = document.getElementById('rig');
+  const thread = document.getElementById('web-thread');
+  const wrap = document.getElementById('spidey-wrap');
+  const img = document.getElementById('spidey-img');
+  const fileInput = document.getElementById('file-input');
+  const hint = document.getElementById('hint');
+
+  const dropHeight = window.innerHeight * 0.45;
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      img.src = evt.target.result;
+      rig.style.display = 'block';
+      hint.style.display = 'block';
+      thread.style.height = '0px';
+      rig.style.transform = 'rotate(0deg)';
+      requestAnimationFrame(drop);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  let pos = 0;
+  const dropSpeed = 6;
+
+  function drop() {
+    if (pos < dropHeight) {
+      pos += dropSpeed;
+      thread.style.height = pos + 'px';
+      requestAnimationFrame(drop);
+    } else {
+      pos = 0;
+      startPendulum();
+    }
+  }
+
+  let angle = 15;
+  let angularVel = 0;
+  const gravity = 0.35;
+  const damping = 0.998;
+  const length = dropHeight;
+  let pendulumRunning = false;
+
+  function startPendulum() {
+    if (pendulumRunning) return;
+    pendulumRunning = true;
+    requestAnimationFrame(pendulumStep);
+  }
+
+  function pendulumStep() {
+    const angleRad = angle * Math.PI / 180;
+    const angularAccel = (-gravity / (length / 100)) * Math.sin(angleRad);
+    angularVel += angularAccel;
+    angularVel *= damping;
+    angle += angularVel;
+
+    rig.style.transform = `rotate(${angle}deg)`;
+    requestAnimationFrame(pendulumStep);
+  }
+
+  wrap.addEventListener('click', (e) => {
+    e.stopPropagation();
+    angularVel += (Math.random() > 0.5 ? 1 : -1) * 4;
+  });
+</script>
+
+</body>
+</html>
