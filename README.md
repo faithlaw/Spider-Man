@@ -1,5 +1,5 @@
 # Spider-Man
-Inspiration after watching Spider-Man: Brand New Day
+Random inspiration after watching Spider-Man: Brand New Day
 
 ## Spidey Drop 🕸️
 A single HTML page where you upload any picture, and it drops down from the top of the browser on a "web thread" then swings like a pendulum. Click it anytime to give it a push.
